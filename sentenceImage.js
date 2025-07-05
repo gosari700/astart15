@@ -164,7 +164,7 @@ function showVideoContent(realSentenceNumber, folder = '') {
     console.log('상단 동영상 요소 생성');
     sentenceVideo = document.createElement('video');
     sentenceVideo.id = 'sentenceVideo';
-    sentenceVideo.className = 'no-border-at-all video-touchable';
+    sentenceVideo.className = 'no-border-at-all video-touchable custom-video-controls';
     sentenceVideo.controls = true; // 컨트롤러 표시
     sentenceVideo.autoplay = false; // 자동 재생 비활성화
     sentenceVideo.muted = false; // 소리 활성화
@@ -188,6 +188,22 @@ function showVideoContent(realSentenceNumber, folder = '') {
     
     // 컨트롤 설정 - 플레이 버튼을 시계 자리에 표시
     sentenceVideo.setAttribute('disableRemotePlayback', ''); // 원격 재생 버튼 비활성화
+    
+    // 비디오가 로드된 후 컨트롤 위치 조정을 위한 이벤트
+    sentenceVideo.addEventListener('loadedmetadata', function() {
+      // 비디오 컨트롤이 로드된 후 약간의 지연을 두고 스타일 적용
+      setTimeout(() => {
+        // 플레이 버튼 위치 조정 시도
+        try {
+          const mediaControlsPlayButton = sentenceVideo.querySelector('::-webkit-media-controls-play-button');
+          if (mediaControlsPlayButton) {
+            mediaControlsPlayButton.style.transform = 'translateY(3px)';
+          }
+        } catch (e) {
+          console.log('플레이 버튼 위치 조정 실패:', e);
+        }
+      }, 300);
+    });
     // controlslist 속성 설정 (다운로드 버튼 제거, 플레이 버튼 유지)
     sentenceVideo.setAttribute('controlslist', 'nodownload'); // 다운로드 버튼 제거
     // 중앙 플레이 버튼은 필요하므로 제거하지 않음
